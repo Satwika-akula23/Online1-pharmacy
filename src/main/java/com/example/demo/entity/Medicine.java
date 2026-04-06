@@ -15,18 +15,21 @@ public class Medicine {
     private double price;
 
     private String imageUrl;
-    
-    private String category; 
+
+    private String category;
+
+    @Column(nullable = false)
+    private int quantity;
 
     // Constructors
     public Medicine() {}
 
-    public Medicine(String name, double price, String imageUrl,String category) {
+    public Medicine(String name, double price, String imageUrl, String category, int quantity) {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
         this.category = category;
-        
+        this.quantity = quantity;
     }
 
     // Getters and Setters
@@ -57,7 +60,20 @@ public class Medicine {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
+
+    public String getCategory() {
+        return category;
+    }
+
     public void setCategory(String category) {
-    	this.category = category;
+        this.category = category;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 }

@@ -27,8 +27,14 @@
 
             <input type="email" id="email" placeholder="Enter Email" required>
 
-            <input type="password" id="password" placeholder="Enter Password" required>
+            <div style="position:relative;">
+    <input type="password" id="password" placeholder="Enter Password" required>
 
+    <span onclick="togglePassword()" 
+          style="position:absolute; right:10px; top:12px; cursor:pointer;">
+        👁
+    </span>
+</div>
             <button type="submit" class="btn btn-primary">
                 Login
             </button>

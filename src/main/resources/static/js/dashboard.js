@@ -32,44 +32,37 @@ async function loadMedicines() {
 
     const container = document.getElementById("medicines");
 
-    container.innerHTML = "<p>Loading medicines...</p>";
+    container.innerHTML = "<p>Loading...</p>";
 
     try {
-        const res = await fetch(API + "/medicines");
-        const medicines = await res.json();
+        const medicines = await apiRequest("/medicines", "GET");
 
-        container.innerHTML = "";
-
-        if (!medicines || medicines.length === 0) {
-            container.innerHTML = "<h3>No medicines available 💊</h3>";
-            return;
-        }
+        let html = "";
 
         medicines.forEach(m => {
 
-            let img = m.imageUrl || "https://via.placeholder.com/300x150?text=Medicine";
-
-            container.innerHTML += `
+            html += `
             <div class="card">
-
-                <img src="${img}" 
-                     onerror="this.src='https://via.placeholder.com/300x150?text=Medicine'">
+                <img src="${m.imageUrl}" 
+                     onerror="this.src='/images/default-medicine.png'">
 
                 <h4>${m.name}</h4>
+                <p>₹${m.price}</p>
 
-                <p style="font-weight:bold;">₹${m.price}</p>
-
-                <button onclick="addToCart(${m.id})" class="btn btn-primary">
-                    🛒 Add to Cart
+                <button onclick="addToCart(${m.id})">
+                    Add to Cart
                 </button>
-
             </div>
             `;
         });
 
+        container.innerHTML = html; // ✅ REMOVE LOADER
+
     } catch (err) {
         console.error(err);
-        container.innerHTML = "<h3>Error loading medicines ❌</h3>";
+
+        // ❗ VERY IMPORTANT
+        container.innerHTML = "<h3>Error loading ❌</h3>";
     }
 }
 

@@ -26,30 +26,24 @@ public class OrderController {
     @Autowired
     private PdfService pdfService;
 
-    // ✅ PLACE ORDER (Single clean API)
+    // ✅ PLACE ORDER
     @PostMapping("/order/place/{userId}")
     public Map<String, Object> placeOrder(@PathVariable Long userId) {
 
+        // ✅ Just validate cart
         List<Map<String, Object>> items = cartService.getCartByUser(userId);
 
         if (items == null || items.isEmpty()) {
             throw new RuntimeException("Cart is empty");
         }
 
-        double total = 0;
-
-        for (Map<String, Object> item : items) {
-            total += (double) item.get("price") * (int) item.get("quantity");
-        }
-
-        Order order = orderService.createOrder(userId, total);
-
-        cartService.clearCart(userId);
+        // ✅ Call service (handles everything)
+        Order order = orderService.placeOrder(userId);
 
         return Map.of(
                 "message", "Order placed successfully",
                 "orderId", order.getId(),
-                "totalAmount", total
+                "totalAmount", order.getTotalAmount()
         );
     }
 

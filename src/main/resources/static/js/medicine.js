@@ -4,6 +4,14 @@ let allMedicines = [];
 /* ================= LOAD ================= */
 function loadMedicines() {
 
+    if (typeof API === "undefined") {
+        console.error("API not defined");
+        return;
+    }
+
+    const container = document.getElementById("medicineList");
+    if (!container) return;
+
     fetch(API + "/medicines")
         .then(res => res.json())
         .then(data => {
@@ -11,14 +19,15 @@ function loadMedicines() {
             renderMedicines(data);
         })
         .catch(() => {
-            document.getElementById("medicineList").innerHTML = "<h3>Error loading medicines ❌</h3>";
+            container.innerHTML = "<h3>Error loading medicines ❌</h3>";
         });
 }
 
-/* ================= RENDER (FIXED NO FLICKER) ================= */
+/* ================= RENDER ================= */
 function renderMedicines(data) {
 
     const container = document.getElementById("medicineList");
+    if (!container) return;
 
     let html = "";
 
@@ -27,29 +36,35 @@ function renderMedicines(data) {
         html += `
             <div class="card">
 
-                <img src="${med.imageUrl}" 
+                <img src="${med.imageUrl || '/images/default-medicine.png'}"
                      loading="lazy"
                      style="height:150px; object-fit:contain; background:#f5f5f5;"
-                     onerror="this.src='/images/default-medicine.png'">
+                     onerror="this.onerror=null; this.src='/images/default-medicine.png';">
 
                 <h3>${med.name}</h3>
 
                 <p>₹${med.price}</p>
 
+                <p>Stock: ${med.quantity}</p>
+
                 <small>${med.category || ""}</small>
 
                 <button class="btn btn-primary" onclick="addToCart(${med.id})">
-                    Add to Cart
+                    🛒 Add to Cart
+                </button>
+
+                <button class="btn btn-secondary" onclick="buyNow(${med.id})">
+                    ⚡ Buy Now
                 </button>
 
             </div>
         `;
     });
 
-    container.innerHTML = html; // ✅ SINGLE RENDER
+    container.innerHTML = html;
 }
 
-/* ================= SEARCH ================= */
+/* ================= SEARCH + FILTER ================= */
 document.addEventListener("DOMContentLoaded", () => {
 
     const search = document.getElementById("searchInput");
@@ -61,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const value = this.value.toLowerCase();
 
             const filtered = allMedicines.filter(m =>
-                m.name.toLowerCase().includes(value)
+                (m.name || "").toLowerCase().includes(value)
             );
 
             renderMedicines(filtered);
@@ -71,14 +86,16 @@ document.addEventListener("DOMContentLoaded", () => {
     if (category) {
         category.addEventListener("change", function () {
 
-            const value = this.value;
+            const value = this.value.toLowerCase();
 
             if (!value) {
                 renderMedicines(allMedicines);
                 return;
             }
 
-            const filtered = allMedicines.filter(m => m.category === value);
+            const filtered = allMedicines.filter(m =>
+                (m.category || "").toLowerCase() === value
+            );
 
             renderMedicines(filtered);
         });
@@ -109,6 +126,38 @@ function addToCart(id) {
     })
     .catch(() => {
         showToast("Error adding to cart ❌");
+    });
+}
+
+/* ================= BUY NOW ================= */
+function buyNow(id) {
+
+    if (!userId) {
+        showToast("Please login first ❌");
+        setTimeout(() => window.location.href = "/login", 1200);
+        return;
+    }
+
+    fetch(API + "/cart/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            userId: parseInt(userId),
+            medicineId: id,
+            quantity: 1
+        })
+    })
+    .then(() => {
+        return fetch(API + "/order/place/" + userId, {
+            method: "POST"
+        });
+    })
+    .then(res => {
+        if (!res.ok) throw new Error();
+        showToast("Order placed successfully ✅");
+    })
+    .catch(() => {
+        showToast("Order failed ❌");
     });
 }
 
