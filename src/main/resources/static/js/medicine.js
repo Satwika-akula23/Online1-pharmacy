@@ -83,23 +83,23 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    if (category) {
-        category.addEventListener("change", function () {
+	if (category) {
+	    category.addEventListener("change", function () {
 
-            const value = this.value.toLowerCase();
+	        const value = this.value;
 
-            if (!value) {
-                renderMedicines(allMedicines);
-                return;
-            }
+	        if (!value) {
+	            renderMedicines(allMedicines);
+	            return;
+	        }
 
-            const filtered = allMedicines.filter(m =>
-                (m.category || "").toLowerCase() === value
-            );
+	        const filtered = allMedicines.filter(m =>
+	            (m.category || "").toLowerCase() === value.toLowerCase()
+	        );
 
-            renderMedicines(filtered);
-        });
-    }
+	        renderMedicines(filtered);
+	    });
+	}
 });
 
 /* ================= ADD TO CART ================= */

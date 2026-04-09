@@ -265,3 +265,7 @@ input {
     margin: 10px;
     border: 1px solid #ccc;
 }
+.card:hover {
+    transform: scale(1.03);
+    transition: 0.2s;
+}

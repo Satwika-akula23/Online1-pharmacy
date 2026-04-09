@@ -3,12 +3,13 @@
 <head>
     <title>Dashboard</title>
     <link rel="stylesheet" href="/css/style.css">
+    <meta charset="UTF-8">
 
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 
-<body onload="checkAuth(); loadUser(); loadMedicines();">
+<body>
 
 <!-- HEADER -->
 <header class="main-header">
@@ -25,6 +26,26 @@
 
 <!-- PAGE TITLE -->
 <h2 class="title">👋 Welcome to Your Dashboard</h2>
+
+<!-- ✅ SEARCH + FILTER (MOVE HERE) -->
+<div style="display:flex; gap:15px; margin:20px; justify-content:center;">
+
+    <input 
+        type="text" 
+        id="searchInput" 
+        placeholder="Search medicines..."
+        style="padding:8px; width:200px;"
+    >
+
+    <select id="categoryFilter" style="padding:8px;">
+        <option value="">All Categories</option>
+        <option value="Fever">Fever</option>
+        <option value="Vitamins">Vitamins</option>
+        <option value="Cold & Cough">Cold & Cough</option>
+        <option value="Digestion">Digestion</option>
+    </select>
+
+</div>
 
 <!-- MEDICINES SECTION -->
 <div class="container">

@@ -1,3 +1,6 @@
+console.log("Orders JS Loaded");
+
+/* ================= LOAD ORDERS ================= */
 function loadOrders() {
 
     const userId = localStorage.getItem("userId");
@@ -8,6 +11,11 @@ function loadOrders() {
     }
 
     const div = document.getElementById("orders");
+
+    if (!div) {
+        console.error("❌ orders div not found");
+        return;
+    }
 
     div.innerHTML = `<div class="loader"></div>`;
 
@@ -25,10 +33,26 @@ function loadOrders() {
         data.forEach(o => {
 
             div.innerHTML += `
-                <div class="order-card">
+                <div class="order-card" style="
+                    border:1px solid #ddd;
+                    padding:15px;
+                    margin:15px;
+                    border-radius:10px;
+                    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+                ">
                     <h3>Order #${o.id}</h3>
+
                     <p><b>Amount:</b> ₹${o.totalAmount}</p>
-                    <p style="color:gray;">${o.createdAt || ""}</p>
+
+                    <p style="color:gray;">
+                        ${formatDate(o.createdAt)}
+                    </p>
+
+                    <!-- Optional small button (does not break existing) -->
+                    <button onclick="downloadInvoice()" 
+                            style="margin-top:10px; padding:6px 10px; background:#2196f3; color:white; border:none; border-radius:5px;">
+                        Invoice
+                    </button>
                 </div>
             `;
         });
@@ -36,6 +60,18 @@ function loadOrders() {
     .catch(() => {
         div.innerHTML = "<p style='text-align:center;'>Failed to load orders ❌</p>";
     });
+}
+
+
+/* ================= DATE FORMAT ================= */
+function formatDate(date) {
+    if (!date) return "";
+
+    try {
+        return new Date(date).toLocaleString();
+    } catch {
+        return date;
+    }
 }
 
 

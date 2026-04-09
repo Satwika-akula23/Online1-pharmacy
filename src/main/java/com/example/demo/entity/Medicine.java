@@ -21,7 +21,10 @@ public class Medicine {
     @Column(nullable = false)
     private int quantity;
 
-    // Constructors
+    // ✅ NEW FIELD (for admin / stock control)
+    private int stock;
+
+    // ================= CONSTRUCTORS =================
     public Medicine() {}
 
     public Medicine(String name, double price, String imageUrl, String category, int quantity) {
@@ -30,9 +33,10 @@ public class Medicine {
         this.imageUrl = imageUrl;
         this.category = category;
         this.quantity = quantity;
+        this.stock = quantity; // default same as quantity
     }
 
-    // Getters and Setters
+    // ================= GETTERS =================
     public Long getId() {
         return id;
     }
@@ -41,39 +45,48 @@ public class Medicine {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public double getPrice() {
         return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
     }
 
     public String getImageUrl() {
         return imageUrl;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
     public String getCategory() {
         return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
     }
 
     public int getQuantity() {
         return quantity;
     }
 
+    public int getStock() {
+        return stock;
+    }
+
+    // ================= SETTERS =================
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public void setStock(int stock) {
+        this.stock = stock;
     }
 }

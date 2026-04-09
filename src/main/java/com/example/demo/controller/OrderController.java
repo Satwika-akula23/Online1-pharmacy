@@ -26,18 +26,16 @@ public class OrderController {
     @Autowired
     private PdfService pdfService;
 
-    // ✅ PLACE ORDER
+    // ================= EXISTING (DO NOT CHANGE) =================
     @PostMapping("/order/place/{userId}")
     public Map<String, Object> placeOrder(@PathVariable Long userId) {
 
-        // ✅ Just validate cart
         List<Map<String, Object>> items = cartService.getCartByUser(userId);
 
         if (items == null || items.isEmpty()) {
             throw new RuntimeException("Cart is empty");
         }
 
-        // ✅ Call service (handles everything)
         Order order = orderService.placeOrder(userId);
 
         return Map.of(
@@ -47,7 +45,29 @@ public class OrderController {
         );
     }
 
-    // ✅ DOWNLOAD INVOICE
+    // ================= NEW FIX (IMPORTANT) =================
+    @PostMapping("/orders/place")
+    public Map<String, Object> placeOrderFromFrontend(@RequestBody Map<String, Object> request) {
+
+        Long userId = Long.valueOf(request.get("userId").toString());
+
+        // reuse existing logic
+        List<Map<String, Object>> items = cartService.getCartByUser(userId);
+
+        if (items == null || items.isEmpty()) {
+            throw new RuntimeException("Cart is empty");
+        }
+
+        Order order = orderService.placeOrder(userId);
+
+        return Map.of(
+                "message", "Order placed successfully",
+                "orderId", order.getId(),
+                "totalAmount", order.getTotalAmount()
+        );
+    }
+
+    // ================= DOWNLOAD INVOICE =================
     @GetMapping("/invoice/{userId}")
     public ResponseEntity<byte[]> downloadInvoice(@PathVariable Long userId) {
 
@@ -66,7 +86,7 @@ public class OrderController {
                 .body(pdf);
     }
 
-    // ✅ GET ORDERS
+    // ================= GET ORDERS =================
     @GetMapping("/orders/{userId}")
     public List<Order> getOrders(@PathVariable Long userId) {
         return orderService.getOrdersByUser(userId);
